@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { MessageSquare, Send, User, Bot, Sparkles } from 'lucide-react';
 
 export default function LiveChatDrawer({ activeRole, project, chatMessages, onSendMessage }) {
   const [inputText, setInputText] = useState('');
@@ -19,54 +18,49 @@ export default function LiveChatDrawer({ activeRole, project, chatMessages, onSe
   };
 
   return (
-    <div className="glass-card" style={{ padding: '24px', marginBottom: '32px' }}>
+    <div className="bg-white border border-zinc-200 rounded-md p-6 shadow-none mb-10">
       
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4 pb-3 border-b border-zinc-100">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <MessageSquare size={18} color="#C28E4E" />
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Real-Time Collaboration Chat</h3>
-            <span style={{ fontSize: '0.68rem', background: 'rgba(194, 142, 78, 0.12)', color: '#925C1A', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
-              ROADMAP FEATURE
-            </span>
-          </div>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-            Direct in-platform communication between client and freelancer linked directly to escrow milestones.
+          <h3 className="text-sm font-semibold tracking-tight text-zinc-950">
+            Live Project Discussion
+          </h3>
+          <p className="text-xs text-zinc-500 mt-0.5">
+            Direct real-time communication between client and freelancer for milestone coordination.
           </p>
         </div>
 
-        <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-          Posting as: <strong style={{ color: activeRole === 'client' ? '#925C1A' : '#A85C3C' }}>
+        <div className="text-xs text-zinc-500 font-mono">
+          Sending as:{' '}
+          <span className="font-semibold text-zinc-950">
             {activeRole === 'client' ? project.clientName : project.freelancerName}
-          </strong>
+          </span>
         </div>
       </div>
 
       {/* Message Feed */}
-      <div className="glass-panel" style={{ height: '260px', padding: '16px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
+      <div className="h-64 overflow-y-auto flex flex-col gap-2.5 p-3 bg-zinc-50 border border-zinc-200 rounded mb-4">
         {chatMessages.map((msg, idx) => {
           const isClient = msg.senderRole === 'client';
           return (
             <div 
               key={idx} 
-              style={{ 
-                alignSelf: isClient ? 'flex-start' : 'flex-end',
-                maxWidth: '80%',
-                background: isClient ? 'rgba(194, 142, 78, 0.12)' : 'rgba(168, 92, 60, 0.12)',
-                border: isClient ? '1px solid rgba(194, 142, 78, 0.3)' : '1px solid rgba(168, 92, 60, 0.3)',
-                borderRadius: '12px',
-                padding: '10px 14px'
-              }}
+              className={`max-w-[80%] rounded p-2.5 text-xs ${
+                isClient 
+                  ? 'self-start bg-white border border-zinc-200' 
+                  : 'self-end bg-zinc-900 text-white'
+              }`}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', marginBottom: '4px', fontSize: '0.75rem' }}>
-                <span style={{ fontWeight: 700, color: isClient ? '#925C1A' : '#A85C3C' }}>
-                  {msg.senderName} ({msg.senderRole.toUpperCase()})
+              <div className="flex items-center justify-between gap-4 mb-1">
+                <span className={`font-mono text-[10px] uppercase font-semibold ${isClient ? 'text-zinc-500' : 'text-zinc-400'}`}>
+                  {msg.senderName} ({msg.senderRole})
                 </span>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>
+                <span className={`font-mono text-[10px] ${isClient ? 'text-zinc-400' : 'text-zinc-500'}`}>
                   {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
-              <div style={{ fontSize: '0.86rem', color: 'var(--text-primary)' }}>
+              <div className={`text-xs ${isClient ? 'text-zinc-900' : 'text-zinc-100'}`}>
                 {msg.message}
               </div>
             </div>
@@ -75,21 +69,19 @@ export default function LiveChatDrawer({ activeRole, project, chatMessages, onSe
       </div>
 
       {/* Input Form */}
-      <form onSubmit={handleSend} style={{ display: 'flex', gap: '10px' }}>
+      <form onSubmit={handleSend} className="flex gap-2">
         <input 
           type="text" 
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder={`Type a message to ${activeRole === 'client' ? 'freelancer' : 'client'}...`}
-          style={{ 
-            flex: 1, 
-            padding: '10px 16px', 
-            borderRadius: '10px', 
-            fontSize: '0.9rem' 
-          }}
+          placeholder={`Write message to ${activeRole === 'client' ? 'freelancer' : 'client'}...`}
+          className="flex-1 text-xs"
         />
-        <button type="submit" className="btn-primary">
-          <Send size={15} /> Send
+        <button 
+          type="submit" 
+          className="h-8 px-4 text-xs font-medium text-white bg-zinc-900 rounded hover:bg-zinc-800 transition-colors"
+        >
+          Send
         </button>
       </form>
 

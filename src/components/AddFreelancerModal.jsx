@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { UserPlus, Mail, User, ShieldCheck, Zap, X, CheckCircle2 } from 'lucide-react';
 
 export default function AddFreelancerModal({ isOpen, onClose, onAssignFreelancer, currentFreelancer }) {
   const [name, setName] = useState(currentFreelancer?.name || '');
@@ -33,99 +32,96 @@ export default function AddFreelancerModal({ isOpen, onClose, onAssignFreelancer
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content" style={{ maxWidth: '520px' }}>
+      <div className="modal-content-minimal max-w-md">
         
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'rgba(168, 92, 60, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <UserPlus size={20} color="#A85C3C" />
-            </div>
-            <div>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0 }}>Assign Freelancer to Escrow</h3>
-              <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: 0 }}>
-                Directly route 4-tier milestone payouts to verified freelancer
-              </p>
-            </div>
+        <div className="flex justify-between items-center mb-4 pb-3 border-b border-zinc-100">
+          <div>
+            <h3 className="text-sm font-semibold tracking-tight text-zinc-950">
+              Assign Freelancer
+            </h3>
+            <p className="text-xs text-zinc-500 mt-0.5">
+              Directly link freelancer to receive 4-tier milestone disbursements.
+            </p>
           </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
-            <X size={20} />
+          <button 
+            onClick={onClose} 
+            className="text-zinc-400 hover:text-zinc-600 text-sm font-mono p-1"
+          >
+            ✕
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          
-          <div style={{ marginBottom: '14px' }}>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>
-              Freelancer Name / Handle
+        <form onSubmit={handleSubmit} className="space-y-3.5">
+          <div>
+            <label className="block text-xs font-medium text-zinc-700 mb-1">
+              Freelancer Name
             </label>
-            <div style={{ position: 'relative' }}>
-              <User size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '12px', top: '12px' }} />
-              <input 
-                type="text" 
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Alex Rivera"
-                style={{ width: '100%', padding: '10px 14px 10px 38px', borderRadius: '8px', fontSize: '0.88rem' }}
-              />
-            </div>
+            <input 
+              type="text" 
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Alex Rivera"
+              className="w-full text-xs"
+            />
           </div>
 
-          <div style={{ marginBottom: '14px' }}>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>
-              Freelancer Email Address
+          <div>
+            <label className="block text-xs font-medium text-zinc-700 mb-1">
+              Email Address
             </label>
-            <div style={{ position: 'relative' }}>
-              <Mail size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '12px', top: '12px' }} />
-              <input 
-                type="email" 
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="freelancer@domain.com"
-                style={{ width: '100%', padding: '10px 14px 10px 38px', borderRadius: '8px', fontSize: '0.88rem' }}
-              />
-            </div>
+            <input 
+              type="email" 
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="alex@freelance.dev"
+              className="w-full text-xs"
+            />
           </div>
 
           {/* Quick Select Presets */}
-          <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '6px', textTransform: 'uppercase' }}>
-              OR SELECT REGISTERED FREELANCER PRESET
+          <div>
+            <label className="block text-[11px] font-mono text-zinc-400 uppercase tracking-wider mb-1.5">
+              Or Choose Preset
             </label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div className="flex flex-col gap-1.5">
               {PRESETS.map((p, idx) => (
                 <div 
                   key={idx}
                   onClick={() => handleSelectPreset(p)}
-                  className="glass-panel"
-                  style={{ 
-                    padding: '8px 12px', 
-                    cursor: 'pointer',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    border: email === p.email ? '1px solid #A85C3C' : '1px solid var(--border-glass)',
-                    background: email === p.email ? 'rgba(168, 92, 60, 0.12)' : 'rgba(244, 238, 229, 0.6)'
-                  }}
+                  className={`p-2.5 border rounded cursor-pointer transition-colors flex justify-between items-center ${
+                    email === p.email 
+                      ? 'border-zinc-950 bg-zinc-50' 
+                      : 'border-zinc-200 bg-white hover:border-zinc-300'
+                  }`}
                 >
                   <div>
-                    <div style={{ fontSize: '0.84rem', fontWeight: 700, color: 'var(--text-primary)' }}>{p.name}</div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>{p.email} • {p.role}</div>
+                    <div className="text-xs font-medium text-zinc-950">{p.name}</div>
+                    <div className="text-[11px] text-zinc-500 font-mono">{p.email} • {p.role}</div>
                   </div>
-                  {email === p.email && <CheckCircle2 size={16} color="#A85C3C" />}
+                  {email === p.email && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-950" />
+                  )}
                 </div>
               ))}
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
-            <button type="button" className="btn-secondary" onClick={onClose}>
+          <div className="pt-2 flex justify-end gap-2 border-t border-zinc-100">
+            <button 
+              type="button" 
+              onClick={onClose}
+              className="h-8 px-3 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 rounded hover:bg-zinc-50 transition-colors"
+            >
               Cancel
             </button>
-            <button type="submit" className="btn-primary" style={{ background: 'linear-gradient(135deg, #A85C3C 0%, #854020 100%)' }}>
-              <UserPlus size={16} /> Assign Freelancer to Escrow
+            <button 
+              type="submit" 
+              className="h-8 px-3 text-xs font-medium text-white bg-zinc-900 rounded hover:bg-zinc-800 transition-colors"
+            >
+              Assign to Escrow
             </button>
           </div>
 

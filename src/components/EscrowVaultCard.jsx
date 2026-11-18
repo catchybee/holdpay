@@ -1,5 +1,4 @@
 import React from 'react';
-import { Lock, ShieldCheck, CheckCircle2, DollarSign, ArrowUpRight, UserPlus, UserCheck } from 'lucide-react';
 
 export default function EscrowVaultCard({ project, milestones, activeRole, onOpenAddFreelancerModal }) {
   if (!project) return null;
@@ -12,169 +11,153 @@ export default function EscrowVaultCard({ project, milestones, activeRole, onOpe
   const progressPercent = (approvedCount / 4) * 100;
 
   return (
-    <div className="glass-card" style={{ padding: '24px', marginBottom: '24px' }}>
+    <div className="bg-white border border-zinc-200 rounded-md p-6 mb-6 shadow-none">
       
       {/* Header Info */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '20px' }}>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 mb-5 border-b border-zinc-100">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 700 }}>{project.title}</h2>
-            <span style={{ 
-              background: 'rgba(194, 142, 78, 0.12)', 
-              color: '#925C1A', 
-              fontSize: '0.72rem', 
-              padding: '3px 10px', 
-              borderRadius: '12px', 
-              fontWeight: 600,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}>
-              <ShieldCheck size={13} /> Active Escrow Vault
-            </span>
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-lg font-semibold tracking-tight text-zinc-950">
+              {project.title}
+            </h2>
+            <div className="inline-flex items-center gap-1.5 text-xs text-zinc-600 bg-zinc-50 border border-zinc-200 px-2 py-0.5 rounded">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span>Active Vault</span>
+            </div>
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', maxWidth: '650px' }}>
+          <p className="text-xs text-zinc-500 mt-1 max-w-2xl">
             {project.description}
           </p>
         </div>
 
-        {/* Parties involved & Add Freelancer Action */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          <div className="glass-panel" style={{ padding: '10px 16px', fontSize: '0.8rem' }}>
-            <div style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>
-              Client: <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{project.clientName}</span>
+        {/* Counterparties & Assign Action */}
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2.5 text-xs text-zinc-600 border border-zinc-200 rounded px-3 py-1.5 bg-zinc-50">
+            <div>
+              <span className="text-zinc-400">Client:</span>{' '}
+              <span className="text-zinc-950 font-medium">{project.clientName}</span>
             </div>
-            <div style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              Freelancer: 
-              <span style={{ color: '#A85C3C', fontWeight: 600 }}>{project.freelancerName}</span>
-              {project.freelancerEmail && (
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>({project.freelancerEmail})</span>
-              )}
-              <span style={{ fontSize: '0.65rem', background: 'rgba(5, 150, 105, 0.12)', color: '#047857', padding: '1px 6px', borderRadius: '8px', fontWeight: 700 }}>
-                VERIFIED
+            <span className="text-zinc-300">/</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-zinc-400">Freelancer:</span>{' '}
+              <span className="text-zinc-950 font-medium">{project.freelancerName}</span>
+              <span className="inline-flex items-center gap-1 text-[10px] text-emerald-600 font-mono ml-0.5">
+                <span className="w-1 h-1 rounded-full bg-emerald-500" />
+                Verified
               </span>
             </div>
           </div>
 
           {activeRole === 'client' && (
-            <button 
-              className="btn-secondary"
+            <button
               onClick={onOpenAddFreelancerModal}
-              style={{ background: 'rgba(168, 92, 60, 0.1)', borderColor: 'rgba(168, 92, 60, 0.3)', color: '#A85C3C', padding: '8px 14px', fontSize: '0.82rem' }}
+              className="h-7 px-2.5 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 rounded hover:bg-zinc-50 transition-colors"
             >
-              <UserPlus size={15} /> + Add / Change Freelancer
+              Assign Freelancer
             </button>
           )}
         </div>
       </div>
 
-      {/* Metrics Row */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', 
-        gap: '16px', 
-        marginBottom: '24px' 
-      }}>
+      {/* Metric Row: Identical white/zinc surfaces with 1px borders */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
         {/* Total Budget */}
-        <div className="glass-panel" style={{ padding: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '6px' }}>
-            <span>TOTAL PROJECT BUDGET</span>
-            <DollarSign size={16} color="#C28E4E" />
+        <div className="bg-white border border-zinc-200 rounded-md p-4 shadow-none">
+          <div className="text-xs font-medium uppercase tracking-wider text-zinc-500 mb-1">
+            TOTAL PROJECT BUDGET
           </div>
-          <div style={{ fontSize: '1.6rem', fontWeight: 800 }} className="gradient-text-cyan">
+          <div className="text-2xl font-mono tabular-nums tracking-tight font-semibold text-zinc-950">
             ${totalBudget.toLocaleString()} USD
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-            Locked upfront before kickoff
+          <div className="text-[11px] text-zinc-400 mt-1 font-mono">
+            Committed upfront
           </div>
         </div>
 
         {/* Vault Locked Balance */}
-        <div className="glass-panel" style={{ padding: '16px', borderLeft: '3px solid #C28E4E' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '6px' }}>
-            <span>ESCROW VAULT BALANCE</span>
-            <Lock size={16} color="#925C1A" />
+        <div className="bg-white border border-zinc-200 rounded-md p-4 shadow-none">
+          <div className="text-xs font-medium uppercase tracking-wider text-zinc-500 mb-1">
+            ESCROW VAULT BALANCE
           </div>
-          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#925C1A' }}>
+          <div className="text-2xl font-mono tabular-nums tracking-tight font-semibold text-zinc-950">
             ${lockedBalance.toLocaleString()} USD
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-            Protected in serverless vault
+          <div className="text-[11px] text-zinc-400 mt-1 font-mono">
+            Held in serverless vault
           </div>
         </div>
 
         {/* Released Payout */}
-        <div className="glass-panel" style={{ padding: '16px', borderLeft: '3px solid #059669' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '6px' }}>
-            <span>RELEASED PAYOUT</span>
-            <ArrowUpRight size={16} color="#059669" />
+        <div className="bg-white border border-zinc-200 rounded-md p-4 shadow-none">
+          <div className="text-xs font-medium uppercase tracking-wider text-zinc-500 mb-1">
+            RELEASED PAYOUT
           </div>
-          <div style={{ fontSize: '1.6rem', fontWeight: 800 }} className="gradient-text-emerald">
+          <div className="text-2xl font-mono tabular-nums tracking-tight font-semibold text-zinc-950">
             ${releasedPayout.toLocaleString()} USD
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#059669', marginTop: '4px' }}>
-            {approvedCount} / 4 Milestones Verified
+          <div className="text-[11px] text-zinc-500 mt-1 font-mono flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            {approvedCount} of 4 milestones released
           </div>
         </div>
       </div>
 
-      {/* 4-Tier Milestone Progress Bar */}
+      {/* Automated 4-Tier Milestone Progress Bar */}
       <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-          <span>AUTOMATED 4-TIER MILESTONE PROGRESS (25% EACH)</span>
-          <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{progressPercent}% RELEASED</span>
+        <div className="flex justify-between items-center text-xs text-zinc-500 mb-2 font-mono">
+          <span className="tracking-wider uppercase text-[11px]">Milestone Disbursement</span>
+          <span className="font-semibold text-zinc-950 tabular-nums">{progressPercent}% Released</span>
         </div>
 
-        {/* Progress Bar background */}
-        <div style={{ height: '10px', background: 'rgba(195, 180, 160, 0.3)', borderRadius: '6px', overflow: 'hidden', position: 'relative', marginBottom: '16px' }}>
-          <div style={{ 
-            height: '100%', 
-            width: `${progressPercent}%`, 
-            background: 'linear-gradient(90deg, #C28E4E 0%, #059669 100%)',
-            transition: 'width 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: '0 0 12px rgba(5, 150, 105, 0.35)'
-          }} />
+        <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden mb-4">
+          <div
+            className="h-full bg-zinc-900 transition-all duration-300"
+            style={{ width: `${progressPercent}%` }}
+          />
         </div>
 
-        {/* Milestone Tier Nodes */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
+        {/* 4 Milestone Tier Boxes */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           {milestones.map((m) => {
             const isApproved = m.status === 'approved';
-            const isReview = m.status === 'under_review';
             const isInProgress = m.status === 'in_progress';
-            
-            let color = 'var(--text-muted)';
-            let bg = 'rgba(244, 238, 229, 0.5)';
-            let border = 'var(--border-glass)';
-
-            if (isApproved) {
-              color = '#059669';
-              bg = 'rgba(5, 150, 105, 0.08)';
-              border = 'rgba(5, 150, 105, 0.3)';
-            } else if (isReview) {
-              color = '#D97706';
-              bg = 'rgba(217, 119, 6, 0.08)';
-              border = 'rgba(217, 119, 6, 0.3)';
-            } else if (isInProgress) {
-              color = '#925C1A';
-              bg = 'rgba(194, 142, 78, 0.1)';
-              border = 'rgba(194, 142, 78, 0.35)';
-            }
+            const isActiveOrDone = isApproved || isInProgress;
 
             return (
-              <div key={m.id} style={{ 
-                background: bg, 
-                border: `1px solid ${border}`, 
-                borderRadius: '8px', 
-                padding: '8px 12px',
-                textAlign: 'center',
-                transition: 'all 0.2s ease'
-              }}>
-                <div style={{ fontSize: '0.72rem', fontWeight: 700, color, textTransform: 'uppercase', marginBottom: '2px' }}>
-                  Tier {m.tier} (25%)
+              <div
+                key={m.id}
+                className={`bg-white rounded-md p-3 transition-colors ${
+                  isActiveOrDone ? 'border-2 border-zinc-900' : 'border border-zinc-200'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider">
+                    Tier {m.tier} (25%)
+                  </span>
+                  {isApproved && (
+                    <span className="inline-flex items-center gap-1 text-[10px] text-emerald-600 font-mono">
+                      <span className="w-1 h-1 rounded-full bg-emerald-500" />
+                      Paid
+                    </span>
+                  )}
+                  {isInProgress && (
+                    <span className="text-[10px] text-zinc-900 font-mono">
+                      Active
+                    </span>
+                  )}
+                  {m.status === 'under_review' && (
+                    <span className="text-[10px] text-zinc-500 font-mono">
+                      Review
+                    </span>
+                  )}
+                  {m.status === 'locked' && (
+                    <span className="text-[10px] text-zinc-400 font-mono">
+                      Locked
+                    </span>
+                  )}
                 </div>
-                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                  ${m.amount.toLocaleString()}
+                <div className="text-base font-mono tabular-nums font-semibold text-zinc-950">
+                  ${m.amount.toLocaleString()} USD
                 </div>
               </div>
             );

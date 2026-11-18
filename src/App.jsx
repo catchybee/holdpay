@@ -10,7 +10,6 @@ import { createInitialProject } from '../convex/projects';
 import { getAuthToken, clearAuthToken } from '../convex/authFix';
 import { useQuery, useMutation } from 'convex/react';
 import { api } from '../convex/_generated/api';
-import { ShieldCheck, History, Sparkles, CheckCircle2, DollarSign, Lock, RefreshCw, Zap, UserPlus } from 'lucide-react';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -125,7 +124,7 @@ export default function App() {
 
   const showToast = (msg) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 4000);
+    setTimeout(() => setToastMessage(null), 3500);
   };
 
   const handleAuthSuccess = (user) => {
@@ -133,16 +132,16 @@ export default function App() {
     if (user.role) {
       setActiveRole(user.role);
     }
-    showToast(`🔐 Authenticated as ${user.name} (${user.role.toUpperCase()})`);
+    showToast(`Authenticated as ${user.name}`);
   };
 
   const handleSignOut = () => {
     clearAuthToken();
     setCurrentUser(null);
-    showToast("Signed out of HoldPay Convex session.");
+    showToast("Signed out of session");
   };
 
-  // Handle assigning / adding freelancer to project directly in Convex Cloud DB
+  // Handle assigning freelancer
   const handleAssignFreelancer = async ({ freelancerName, freelancerEmail }) => {
     if (activeProjectId) {
       try {
@@ -155,10 +154,10 @@ export default function App() {
         console.warn("Assign mutation note:", err);
       }
     }
-    showToast(`👤 Assigned ${freelancerName} to project escrow in Convex Database!`);
+    showToast(`Assigned ${freelancerName} to escrow project`);
   };
 
-  // Handle Freelancer submitting work directly in Convex Cloud DB
+  // Handle submitting work
   const handleSubmitWork = async (milestoneId, proofLink, submissionNotes) => {
     try {
       await submitWorkMutation({
@@ -169,10 +168,10 @@ export default function App() {
     } catch (err) {
       console.warn("Submit work mutation note:", err);
     }
-    showToast("📁 Milestone deliverable submitted to Convex Database!");
+    showToast("Deliverable proof submitted for review");
   };
 
-  // Handle Client One-Click Approve & Pay directly in Convex Cloud DB!
+  // Handle Client One-Click Approve & Pay
   const handleApproveAndPay = async (milestoneId) => {
     if (activeProjectId) {
       try {
@@ -184,10 +183,10 @@ export default function App() {
         console.warn("Approve mutation note:", err);
       }
     }
-    showToast(`⚡ ONE-CLICK PAYOUT EXECUTED & STORED IN CONVEX CLOUD DATABASE!`);
+    showToast("Milestone payout executed successfully");
   };
 
-  // Create new project directly in Convex Cloud DB
+  // Create new project
   const handleCreateProject = async (data) => {
     try {
       await createProjectMutation({
@@ -201,10 +200,10 @@ export default function App() {
     } catch (err) {
       console.warn("Create project mutation note:", err);
     }
-    showToast(`✨ Escrow project created & saved in Convex Database!`);
+    showToast("New escrow project created");
   };
 
-  // Send chat message directly to Convex Cloud DB
+  // Send chat message
   const handleSendMessage = async (msg) => {
     if (activeProjectId) {
       try {
@@ -221,32 +220,17 @@ export default function App() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', pb: '50px' }}>
+    <div className="min-h-screen bg-zinc-50 text-zinc-950 font-sans pb-16">
       
-      {/* Toast Notification */}
+      {/* Toast Notification - Minimal bottom-right */}
       {toastMessage && (
-        <div style={{ 
-          position: 'fixed', 
-          bottom: '24px', 
-          right: '24px', 
-          zIndex: 2000, 
-          background: 'linear-gradient(135deg, #10B981 0%, #047857 100%)', 
-          color: '#FFF', 
-          padding: '12px 20px', 
-          borderRadius: '12px', 
-          boxShadow: '0 10px 30px rgba(16, 185, 129, 0.4)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          fontWeight: 600,
-          fontSize: '0.9rem',
-          animation: 'modalSlideUp 0.3s ease-out'
-        }}>
-          <Sparkles size={18} /> {toastMessage}
+        <div className="fixed bottom-5 right-5 z-50 bg-zinc-900 text-white text-xs px-3.5 py-2 rounded border border-zinc-800 shadow-none flex items-center gap-2 font-mono">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Navigation */}
+      {/* Top Navbar: Full-width, flush with top edge */}
       <Navbar 
         currentUser={currentUser}
         activeRole={activeRole} 
@@ -256,9 +240,9 @@ export default function App() {
         onOpenCreateModal={() => setIsCreateModalOpen(true)}
       />
 
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px 60px 20px' }}>
+      <main className="max-w-6xl mx-auto px-6 pt-6">
         
-        {/* Escrow Vault Card Header */}
+        {/* Metric & Escrow Vault Card Header */}
         <EscrowVaultCard 
           project={displayProject} 
           milestones={displayMilestones} 
@@ -266,69 +250,39 @@ export default function App() {
           onOpenAddFreelancerModal={() => setIsAddFreelancerModalOpen(true)}
         />
 
-        {/* Navigation Tabs */}
-        <div className="glass-panel" style={{ padding: '6px', display: 'flex', gap: '6px', marginBottom: '24px' }}>
+        {/* Navigation Tabs: Clean, bottom-bordered horizontal tab bar */}
+        <div className="border-b border-zinc-200 mb-6 flex gap-6">
           <button 
             onClick={() => setActiveTab('milestones')}
-            style={{ 
-              flex: 1, 
-              padding: '10px', 
-              background: activeTab === 'milestones' ? 'rgba(194, 142, 78, 0.18)' : 'transparent',
-              border: activeTab === 'milestones' ? '1px solid rgba(194, 142, 78, 0.45)' : 'none',
-              borderRadius: '8px',
-              color: activeTab === 'milestones' ? '#925C1A' : 'var(--text-secondary)',
-              fontWeight: 700,
-              fontSize: '0.88rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
-            }}
+            className={`pb-2.5 text-xs font-medium tracking-tight transition-all border-b-2 -mb-px ${
+              activeTab === 'milestones'
+                ? 'border-zinc-950 text-zinc-950 font-semibold'
+                : 'border-transparent text-zinc-500 hover:text-zinc-800'
+            }`}
           >
-            <Zap size={16} /> 4-Tier Milestones
+            4-Tier Milestones
           </button>
 
           <button 
             onClick={() => setActiveTab('chat')}
-            style={{ 
-              flex: 1, 
-              padding: '10px', 
-              background: activeTab === 'chat' ? 'rgba(168, 92, 60, 0.16)' : 'transparent',
-              border: activeTab === 'chat' ? '1px solid rgba(168, 92, 60, 0.4)' : 'none',
-              borderRadius: '8px',
-              color: activeTab === 'chat' ? '#A85C3C' : 'var(--text-secondary)',
-              fontWeight: 700,
-              fontSize: '0.88rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
-            }}
+            className={`pb-2.5 text-xs font-medium tracking-tight transition-all border-b-2 -mb-px ${
+              activeTab === 'chat'
+                ? 'border-zinc-950 text-zinc-950 font-semibold'
+                : 'border-transparent text-zinc-500 hover:text-zinc-800'
+            }`}
           >
-            <Sparkles size={16} /> Live Collaboration Chat
+            Live Chat
           </button>
 
           <button 
             onClick={() => setActiveTab('transactions')}
-            style={{ 
-              flex: 1, 
-              padding: '10px', 
-              background: activeTab === 'transactions' ? 'rgba(5, 150, 105, 0.16)' : 'transparent',
-              border: activeTab === 'transactions' ? '1px solid rgba(5, 150, 105, 0.4)' : 'none',
-              borderRadius: '8px',
-              color: activeTab === 'transactions' ? '#047857' : 'var(--text-secondary)',
-              fontWeight: 700,
-              fontSize: '0.88rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
-            }}
+            className={`pb-2.5 text-xs font-medium tracking-tight transition-all border-b-2 -mb-px ${
+              activeTab === 'transactions'
+                ? 'border-zinc-950 text-zinc-950 font-semibold'
+                : 'border-transparent text-zinc-500 hover:text-zinc-800'
+            }`}
           >
-            <History size={16} /> Audit & Transaction Feed ({displayTransactions.length})
+            Audit Log ({displayTransactions.length})
           </button>
         </div>
 
@@ -354,37 +308,41 @@ export default function App() {
 
         {/* Tab 3: Transaction Feed */}
         {activeTab === 'transactions' && (
-          <div className="glass-card" style={{ padding: '24px' }}>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '6px' }}>
-              Real-Time Escrow Transaction Log
-            </h3>
-            <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', marginBottom: '20px' }}>
-              Immutable serverless audit log powered by Convex real-time synchronization.
-            </p>
+          <div className="bg-white border border-zinc-200 rounded-md p-6 shadow-none">
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold tracking-tight text-zinc-950">
+                Audit & Transaction Feed
+              </h3>
+              <p className="text-xs text-zinc-500 mt-0.5">
+                Immutable ledger of all escrow deposits, assignments, and milestone payouts.
+              </p>
+            </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="divide-y divide-zinc-100">
               {displayTransactions.map((tx) => (
-                <div key={tx.id} className="glass-panel" style={{ padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: tx.type === 'escrow_deposit' ? 'rgba(194, 142, 78, 0.15)' : tx.type === 'freelancer_assigned' ? 'rgba(168, 92, 60, 0.15)' : 'rgba(5, 150, 105, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      {tx.type === 'escrow_deposit' ? <Lock size={18} color="#925C1A" /> : tx.type === 'freelancer_assigned' ? <UserPlus size={18} color="#A85C3C" /> : <DollarSign size={18} color="#059669" />}
-                    </div>
+                <div key={tx.id} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 shrink-0" />
                     <div>
-                      <div style={{ fontWeight: 700, fontSize: '0.92rem' }}>
-                        {tx.type === 'escrow_deposit' ? 'Upfront Budget Escrow Deposit' : tx.type === 'freelancer_assigned' ? 'Freelancer Assigned to Escrow' : `Tier ${tx.milestoneTier} Milestone Payout Released`}
+                      <div className="text-xs font-medium text-zinc-950">
+                        {tx.type === 'escrow_deposit' 
+                          ? 'Escrow Deposit Locked' 
+                          : tx.type === 'freelancer_assigned' 
+                          ? 'Freelancer Assigned to Project' 
+                          : `Tier ${tx.milestoneTier} Milestone Payout Released`}
                       </div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                        From: {tx.sender} → To: {tx.recipient} | Stripe Intent ID: {tx.stripePaymentIntentId}
+                      <div className="text-[11px] text-zinc-500 font-mono mt-0.5">
+                        {tx.sender} → {tx.recipient} • {new Date(tx.timestamp).toLocaleString()}
                       </div>
                     </div>
                   </div>
 
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: tx.type === 'escrow_deposit' ? '#925C1A' : tx.type === 'freelancer_assigned' ? '#A85C3C' : '#059669' }}>
+                  <div className="text-right pl-4">
+                    <div className="text-sm font-mono tabular-nums font-semibold text-zinc-950">
                       {tx.type === 'freelancer_assigned' ? 'VERIFIED' : `$${tx.amount.toLocaleString()} USD`}
                     </div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                      {new Date(tx.timestamp).toLocaleString()}
+                    <div className="text-[10px] text-zinc-400 font-mono">
+                      {tx.stripePaymentIntentId}
                     </div>
                   </div>
                 </div>

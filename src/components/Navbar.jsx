@@ -1,120 +1,82 @@
 import React from 'react';
-import { ShieldCheck, Lock, UserCheck, PlusCircle, Zap, LogIn, LogOut, User } from 'lucide-react';
 
 export default function Navbar({ currentUser, activeRole, setActiveRole, onOpenAuthModal, onSignOut, onOpenCreateModal }) {
   return (
-    <header className="glass-card" style={{ borderRadius: '0 0 20px 20px', borderTop: 'none', padding: '16px 28px', marginBottom: '28px' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+    <header className="w-full border-b border-zinc-200 bg-white">
+      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
         
         {/* Brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{ 
-            width: '42px', 
-            height: '42px', 
-            borderRadius: '12px', 
-            background: 'linear-gradient(135deg, #C28E4E 0%, #9A682C 100%)', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            boxShadow: '0 4px 16px rgba(194, 142, 78, 0.35)'
-          }}>
-            <Lock size={22} color="#FFFFFF" />
+        <div className="flex items-center gap-2.5">
+          <div className="w-6 h-6 rounded bg-zinc-950 flex items-center justify-center text-white font-mono text-xs font-semibold">
+            H
           </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <h1 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0 }} className="gradient-text-cyan">
-                HoldPay
-              </h1>
-              <span style={{ 
-                fontSize: '0.65rem', 
-                background: 'rgba(5, 150, 105, 0.1)', 
-                color: '#047857', 
-                border: '1px solid rgba(5, 150, 105, 0.25)', 
-                padding: '2px 8px', 
-                borderRadius: '12px', 
-                fontWeight: 700 
-              }}>
-                CONVEX AUTH READY
-              </span>
-            </div>
-            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: 0 }}>
-              Zero-Friction Freelance Escrow Vault • Powered by Convex Auth & Stripe
-            </p>
-          </div>
+          <span className="font-semibold text-sm tracking-tight text-zinc-950">
+            HoldPay
+          </span>
+          <span className="text-zinc-300 text-xs">/</span>
+          <span className="text-xs text-zinc-500 font-normal">
+            Escrow Bridge
+          </span>
         </div>
 
-        {/* Action Controls & Auth User Info */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+        {/* Action Controls & Role Switcher */}
+        <div className="flex items-center gap-3">
           
-          {/* Role Toggle */}
-          <div className="glass-panel" style={{ padding: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          {/* Segmented Control Role Switcher */}
+          <div className="bg-zinc-100 p-0.5 rounded-md flex items-center">
             <button
               onClick={() => setActiveRole('client')}
-              style={{
-                background: activeRole === 'client' ? 'linear-gradient(135deg, #C28E4E 0%, #9A682C 100%)' : 'transparent',
-                color: activeRole === 'client' ? '#FFF' : 'var(--text-secondary)',
-                border: 'none',
-                padding: '6px 12px',
-                borderRadius: '8px',
-                fontSize: '0.78rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
+              className={`px-3 py-1 text-xs font-medium rounded transition-all ${
+                activeRole === 'client'
+                  ? 'bg-white text-zinc-950 border border-zinc-200/80 shadow-none'
+                  : 'text-zinc-500 hover:text-zinc-900'
+              }`}
             >
-              <UserCheck size={14} /> Client View
+              Client
             </button>
             <button
               onClick={() => setActiveRole('freelancer')}
-              style={{
-                background: activeRole === 'freelancer' ? 'linear-gradient(135deg, #A85C3C 0%, #854020 100%)' : 'transparent',
-                color: activeRole === 'freelancer' ? '#FFF' : 'var(--text-secondary)',
-                border: 'none',
-                padding: '6px 12px',
-                borderRadius: '8px',
-                fontSize: '0.78rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
+              className={`px-3 py-1 text-xs font-medium rounded transition-all ${
+                activeRole === 'freelancer'
+                  ? 'bg-white text-zinc-950 border border-zinc-200/80 shadow-none'
+                  : 'text-zinc-500 hover:text-zinc-900'
+              }`}
             >
-              <Zap size={14} /> Freelancer View
+              Freelancer
             </button>
           </div>
 
           {/* New Project Button */}
-          <button className="btn-primary" onClick={onOpenCreateModal} style={{ padding: '8px 14px', fontSize: '0.85rem' }}>
-            <PlusCircle size={16} /> New Escrow Project
+          <button
+            onClick={onOpenCreateModal}
+            className="h-8 px-3 text-xs font-medium text-zinc-900 bg-white border border-zinc-200 rounded hover:bg-zinc-50 transition-colors"
+          >
+            New Project
           </button>
 
           {/* Auth Button / Profile Badge */}
           {currentUser ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div className="glass-panel" style={{ padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: currentUser.role === 'client' ? '#C28E4E' : '#A85C3C', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.75rem', color: '#FFF' }}>
-                  {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>{currentUser.name}</div>
-                  <div style={{ fontSize: '0.68rem', color: currentUser.role === 'client' ? '#925C1A' : '#A85C3C', textTransform: 'uppercase', fontWeight: 700 }}>
-                    {currentUser.role}
-                  </div>
-                </div>
+            <div className="flex items-center gap-2">
+              <div className="h-8 px-2.5 flex items-center gap-2 bg-zinc-50 border border-zinc-200 rounded text-xs text-zinc-900 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span>{currentUser.name}</span>
+                <span className="text-[10px] text-zinc-400 uppercase font-mono tracking-wider">
+                  {currentUser.role}
+                </span>
               </div>
-
-              <button className="btn-secondary" onClick={onSignOut} style={{ padding: '8px 12px', fontSize: '0.78rem' }}>
-                <LogOut size={14} /> Sign Out
+              <button
+                onClick={onSignOut}
+                className="h-8 px-2 text-xs text-zinc-500 hover:text-zinc-900 transition-colors"
+              >
+                Sign Out
               </button>
             </div>
           ) : (
-            <button className="btn-emerald" onClick={onOpenAuthModal} style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
-              <LogIn size={16} /> Sign In / Register
+            <button
+              onClick={onOpenAuthModal}
+              className="h-8 px-3 text-xs font-medium text-white bg-zinc-900 rounded hover:bg-zinc-800 transition-colors"
+            >
+              Sign In / Register
             </button>
           )}
 

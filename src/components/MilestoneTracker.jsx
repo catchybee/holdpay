@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Clock, Lock, Send, ExternalLink, Zap, ShieldCheck, AlertCircle } from 'lucide-react';
 
 export default function MilestoneTracker({ milestones, activeRole, onSubmitWork, onApproveAndPay }) {
   const [selectedMilestone, setSelectedMilestone] = useState(null);
@@ -9,7 +8,7 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
   const handleOpenSubmitModal = (m) => {
     setSelectedMilestone(m);
     setProofUrl(m.proofLink || 'https://github.com/team-hackdot/holdpay-demo');
-    setSubmissionNotes(m.submissionNotes || 'Completed milestone deliverables as specified in project contract.');
+    setSubmissionNotes(m.submissionNotes || 'Deliverables completed as specified.');
   };
 
   const handleConfirmSubmission = (e) => {
@@ -20,28 +19,29 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
   };
 
   return (
-    <div style={{ marginBottom: '32px' }}>
+    <div className="mb-10">
       
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
         <div>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Strict 4-Tier Milestone Logic</h3>
-          <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-            Funds are locked in escrow upfront and released in 4 equal 25% increments upon client approval.
+          <h3 className="text-sm font-semibold tracking-tight text-zinc-950">
+            Automated 4-Tier Milestones
+          </h3>
+          <p className="text-xs text-zinc-500 mt-0.5">
+            Budget is split into 4 equal 25% payouts released upon client approval.
           </p>
         </div>
 
-        <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          Role: 
-          {activeRole === 'client' ? (
-            <span className="role-badge-client">Client (Approver)</span>
-          ) : (
-            <span className="role-badge-freelancer">Freelancer (Submitter)</span>
-          )}
+        <div className="text-xs text-zinc-500 font-mono">
+          Current View:{' '}
+          <span className="font-semibold text-zinc-900 uppercase">
+            {activeRole}
+          </span>
         </div>
       </div>
 
       {/* List of 4 Milestones */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <div className="flex flex-col gap-2.5">
         {milestones.map((m) => {
           const isLocked = m.status === 'locked';
           const isInProgress = m.status === 'in_progress';
@@ -51,70 +51,73 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
           return (
             <div 
               key={m.id} 
-              className="glass-card" 
-              style={{ 
-                padding: '20px', 
-                borderLeft: isApproved 
-                  ? '4px solid #059669' 
-                  : isReview 
-                  ? '4px solid #D97706' 
+              className={`bg-white border rounded-md p-4 transition-colors ${
+                isApproved 
+                  ? 'border-zinc-200' 
                   : isInProgress 
-                  ? '4px solid #C28E4E' 
-                  : '4px solid rgba(195, 180, 160, 0.4)',
-                opacity: isLocked ? 0.75 : 1
-              }}
+                  ? 'border-zinc-900' 
+                  : isReview
+                  ? 'border-zinc-300'
+                  : 'border-zinc-200 opacity-60'
+              }`}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 
-                {/* Left info */}
-                <div style={{ flex: '1 1 300px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-                    <span style={{ 
-                      fontSize: '0.72rem', 
-                      background: 'rgba(195, 180, 160, 0.25)', 
-                      padding: '2px 8px', 
-                      borderRadius: '6px', 
-                      fontWeight: 700,
-                      color: 'var(--text-secondary)'
-                    }}>
-                      MILESTONE {m.tier} OF 4
+                {/* Left Info */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                      Tier {m.tier} of 4 (25%)
                     </span>
 
-                    {/* Status Badges */}
+                    {/* Status text with subtle dot */}
                     {isApproved && (
-                      <span style={{ color: '#059669', fontSize: '0.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <CheckCircle2 size={14} /> APPROVED & PAID (25%)
+                      <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-mono">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        Approved & Paid
                       </span>
                     )}
                     {isReview && (
-                      <span style={{ color: '#D97706', fontSize: '0.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Clock size={14} /> UNDER CLIENT REVIEW
+                      <span className="inline-flex items-center gap-1 text-[11px] text-zinc-700 font-mono">
+                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
+                        Under Client Review
                       </span>
                     )}
                     {isInProgress && (
-                      <span style={{ color: '#925C1A', fontSize: '0.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Zap size={14} /> WORK IN PROGRESS
+                      <span className="inline-flex items-center gap-1 text-[11px] text-zinc-950 font-mono font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-950" />
+                        Work in Progress
                       </span>
                     )}
                     {isLocked && (
-                      <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Lock size={14} /> LOCKED IN VAULT
+                      <span className="inline-flex items-center gap-1 text-[11px] text-zinc-400 font-mono">
+                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-300" />
+                        Locked in Vault
                       </span>
                     )}
                   </div>
 
-                  <h4 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '4px' }}>{m.title}</h4>
-                  <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)' }}>{m.description}</p>
+                  <h4 className="text-sm font-semibold text-zinc-950">
+                    {m.title}
+                  </h4>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    {m.description}
+                  </p>
 
                   {/* Submission details if under review or approved */}
                   {(isReview || isApproved) && m.proofLink && (
-                    <div style={{ marginTop: '10px', background: 'rgba(244, 238, 229, 0.75)', border: '1px solid rgba(195, 180, 160, 0.35)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.78rem' }}>
-                      <div style={{ color: 'var(--text-muted)', marginBottom: '2px' }}>Submitted Proof of Work:</div>
-                      <a href={m.proofLink} target="_blank" rel="noreferrer" style={{ color: '#925C1A', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-                        {m.proofLink} <ExternalLink size={12} />
+                    <div className="mt-2.5 p-2 bg-zinc-50 border border-zinc-200 rounded text-xs">
+                      <div className="text-[11px] text-zinc-400 font-mono mb-0.5">Proof Deliverable:</div>
+                      <a 
+                        href={m.proofLink} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className="text-xs font-mono text-zinc-900 underline hover:text-zinc-600 truncate block"
+                      >
+                        {m.proofLink}
                       </a>
                       {m.submissionNotes && (
-                        <div style={{ color: 'var(--text-secondary)', marginTop: '4px', fontStyle: 'italic' }}>
+                        <div className="text-xs text-zinc-600 mt-1 italic">
                           "{m.submissionNotes}"
                         </div>
                       )}
@@ -123,47 +126,43 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
                 </div>
 
                 {/* Right Amount & Actions */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>25% Milestone Payout</div>
-                    <div style={{ fontSize: '1.3rem', fontWeight: 800, color: isApproved ? '#059669' : 'var(--text-primary)' }}>
+                <div className="flex sm:flex-col items-end justify-between sm:justify-center gap-2 sm:gap-2 shrink-0">
+                  <div className="text-right">
+                    <div className="text-base font-mono tabular-nums font-semibold text-zinc-950">
                       ${m.amount.toLocaleString()} USD
                     </div>
                   </div>
 
                   {/* Action Buttons */}
                   <div>
-                    {/* Freelancer Action: Submit Work */}
                     {activeRole === 'freelancer' && (isInProgress || isReview) && !isApproved && (
                       <button 
-                        className="btn-secondary" 
                         onClick={() => handleOpenSubmitModal(m)}
-                        style={{ background: 'rgba(168, 92, 60, 0.1)', borderColor: 'rgba(168, 92, 60, 0.3)', color: '#A85C3C' }}
+                        className="h-7 px-3 text-xs font-medium text-zinc-900 bg-white border border-zinc-200 rounded hover:bg-zinc-50 transition-colors"
                       >
-                        <Send size={15} /> {isReview ? 'Update Work Proof' : 'Submit Deliverable'}
+                        {isReview ? 'Update Proof' : 'Submit Proof'}
                       </button>
                     )}
 
-                    {/* Client Action: One-Click Approve & Pay */}
                     {activeRole === 'client' && isReview && (
                       <button 
-                        className="btn-emerald"
                         onClick={() => onApproveAndPay(m.id)}
+                        className="h-7 px-3 text-xs font-medium text-white bg-zinc-900 rounded hover:bg-zinc-800 transition-colors"
                       >
-                        <Zap size={16} /> One-Click Approve & Pay
+                        Approve & Pay
                       </button>
                     )}
 
-                    {/* Role helper hint if client looks at in-progress or locked */}
                     {activeRole === 'client' && isInProgress && (
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', maxWidth: '140px' }}>
-                        Waiting for freelancer submission
-                      </div>
+                      <span className="text-[11px] text-zinc-400 font-mono">
+                        Awaiting submission
+                      </span>
                     )}
+
                     {activeRole === 'freelancer' && isLocked && (
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', maxWidth: '140px' }}>
-                        Unlocks after previous tier completion
-                      </div>
+                      <span className="text-[11px] text-zinc-400 font-mono">
+                        Locked
+                      </span>
                     )}
                   </div>
 
@@ -178,18 +177,18 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
       {/* Modal for Freelancer Submitting Work */}
       {selectedMilestone && (
         <div className="modal-overlay">
-          <div className="modal-content">
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '6px' }}>
-              Submit Milestone {selectedMilestone.tier} Deliverable
+          <div className="modal-content-minimal">
+            <h3 className="text-sm font-semibold tracking-tight text-zinc-950 mb-1">
+              Submit Milestone {selectedMilestone.tier} Proof
             </h3>
-            <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', marginBottom: '18px' }}>
-              Provide proof of work (GitHub repo, Figma prototype, staging URL) for client verification.
+            <p className="text-xs text-zinc-500 mb-4">
+              Enter the link to deliverables (GitHub pull request, prototype, deployment) for verification.
             </p>
 
             <form onSubmit={handleConfirmSubmission}>
-              <div style={{ marginBottom: '14px' }}>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                  Proof of Work URL
+              <div className="mb-3">
+                <label className="block text-xs font-medium text-zinc-700 mb-1">
+                  Deliverable Link
                 </label>
                 <input 
                   type="url" 
@@ -197,40 +196,36 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
                   value={proofUrl} 
                   onChange={(e) => setProofUrl(e.target.value)}
                   placeholder="https://github.com/..." 
-                  style={{ 
-                    width: '100%', 
-                    padding: '10px 14px', 
-                    borderRadius: '8px', 
-                    fontSize: '0.9rem' 
-                  }} 
+                  className="w-full text-xs" 
                 />
               </div>
 
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                  Submission Notes
+              <div className="mb-4">
+                <label className="block text-xs font-medium text-zinc-700 mb-1">
+                  Notes
                 </label>
                 <textarea 
                   rows={3}
                   value={submissionNotes}
                   onChange={(e) => setSubmissionNotes(e.target.value)}
-                  placeholder="Summary of completed features..."
-                  style={{ 
-                    width: '100%', 
-                    padding: '10px 14px', 
-                    borderRadius: '8px', 
-                    fontSize: '0.9rem',
-                    resize: 'none'
-                  }} 
+                  placeholder="Summary of completed milestone work..."
+                  className="w-full text-xs resize-none" 
                 />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                <button type="button" className="btn-secondary" onClick={() => setSelectedMilestone(null)}>
+              <div className="flex justify-end gap-2">
+                <button 
+                  type="button" 
+                  onClick={() => setSelectedMilestone(null)}
+                  className="h-8 px-3 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 rounded hover:bg-zinc-50 transition-colors"
+                >
                   Cancel
                 </button>
-                <button type="submit" className="btn-primary">
-                  Submit to Client for Review
+                <button 
+                  type="submit" 
+                  className="h-8 px-3 text-xs font-medium text-white bg-zinc-900 rounded hover:bg-zinc-800 transition-colors"
+                >
+                  Submit for Approval
                 </button>
               </div>
             </form>
