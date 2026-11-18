@@ -27,7 +27,7 @@ HoldPay was built by **Team HackDot** (Deepak Kumar & Himanshu Pathak) for the *
 - **Frontend:** React 18, Vite, Lucide React icons, and custom glassmorphic CSS rules.
 - **Backend & Database:** Convex Serverless Backend (real-time synced database and serverless functions).
 - **Authentication:** `@convex-dev/auth` with Email & Password provider.
-- **Hosting & Infrastructure:** Published live on **Enterpro** cloud hosting.
+- **Hosting & Infrastructure:** Published live on **Enterpro** / **Vercel** cloud hosting.
 - **Payments:** Stripe API integration simulation.
 
 ---
@@ -63,3 +63,34 @@ We implemented a 1-second storage stabilization delay (`saveTokenWithStabilizati
 1. Clone the repository and navigate to the project directory:
    ```bash
    cd HoldPay
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Initialize the Convex environment:
+   ```bash
+   npx convex dev --once
+   ```
+4. Build the production bundle:
+   ```bash
+   npm run build
+   ```
+5. Launch the local Vite development server:
+   ```bash
+   npx vite --host --port 3000
+   ```
+6. Open **`http://localhost:3000`** in your browser.
+
+---
+
+## ☁️ Deployment
+
+HoldPay can be deployed seamlessly to **Vercel** and **Enterpro**.
+
+### Vercel Deployment Instructions:
+1. Connect this repository to your Vercel Dashboard.
+2. Set the framework preset to **Vite**.
+3. In the project **Environment Variables**, add:
+   - `VITE_CONVEX_URL`: your Convex cloud URL (e.g. `https://aromatic-chinchilla-574.convex.cloud`)
+4. Click **Deploy**. Vercel will automatically build the application and route all requests cleanly via `vercel.json`.
