@@ -2,12 +2,12 @@ import React from 'react';
 
 export default function Navbar({ currentUser, activeRole, setActiveRole, onOpenAuthModal, onSignOut, onOpenCreateModal }) {
   return (
-    <header className="w-full border-b border-zinc-200 bg-white">
+    <header className="w-full border-b border-zinc-200 bg-white sticky top-0 z-40">
       <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
         
         {/* Brand */}
         <div className="flex items-center gap-2.5">
-          <div className="w-6 h-6 rounded bg-zinc-950 flex items-center justify-center text-white font-mono text-xs font-semibold">
+          <div className="w-6 h-6 rounded bg-indigo-600 flex items-center justify-center text-white font-mono text-xs font-semibold shadow-sm">
             H
           </div>
           <span className="font-semibold text-sm tracking-tight text-zinc-950">
@@ -46,10 +46,10 @@ export default function Navbar({ currentUser, activeRole, setActiveRole, onOpenA
             </button>
           </div>
 
-          {/* New Project Button */}
+          {/* Primary Action Button: Fintech Indigo with subtle shadow */}
           <button
             onClick={onOpenCreateModal}
-            className="h-8 px-3 text-xs font-medium text-zinc-900 bg-white border border-zinc-200 rounded hover:bg-zinc-50 transition-colors"
+            className="h-8 px-3 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded shadow-sm transition-colors"
           >
             New Project
           </button>

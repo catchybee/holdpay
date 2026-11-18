@@ -156,7 +156,7 @@ export default function CreateProjectModal({ isOpen, onClose, onCreateProject })
             </button>
             <button 
               type="submit" 
-              className="h-8 px-3 text-xs font-medium text-white bg-zinc-900 rounded hover:bg-zinc-800 transition-colors"
+              className="h-8 px-3.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded shadow-sm transition-colors"
             >
               Lock Funds & Create
             </button>

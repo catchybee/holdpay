@@ -250,13 +250,13 @@ export default function App() {
           onOpenAddFreelancerModal={() => setIsAddFreelancerModalOpen(true)}
         />
 
-        {/* Navigation Tabs: Clean, bottom-bordered horizontal tab bar */}
+        {/* Navigation Tabs: Indigo Active Indicator */}
         <div className="border-b border-zinc-200 mb-6 flex gap-6">
           <button 
             onClick={() => setActiveTab('milestones')}
-            className={`pb-2.5 text-xs font-medium tracking-tight transition-all border-b-2 -mb-px ${
+            className={`pb-2.5 text-xs tracking-tight transition-all border-b-2 -mb-px ${
               activeTab === 'milestones'
-                ? 'border-zinc-950 text-zinc-950 font-semibold'
+                ? 'border-indigo-600 text-indigo-600 font-medium'
                 : 'border-transparent text-zinc-500 hover:text-zinc-800'
             }`}
           >
@@ -265,9 +265,9 @@ export default function App() {
 
           <button 
             onClick={() => setActiveTab('chat')}
-            className={`pb-2.5 text-xs font-medium tracking-tight transition-all border-b-2 -mb-px ${
+            className={`pb-2.5 text-xs tracking-tight transition-all border-b-2 -mb-px ${
               activeTab === 'chat'
-                ? 'border-zinc-950 text-zinc-950 font-semibold'
+                ? 'border-indigo-600 text-indigo-600 font-medium'
                 : 'border-transparent text-zinc-500 hover:text-zinc-800'
             }`}
           >
@@ -276,9 +276,9 @@ export default function App() {
 
           <button 
             onClick={() => setActiveTab('transactions')}
-            className={`pb-2.5 text-xs font-medium tracking-tight transition-all border-b-2 -mb-px ${
+            className={`pb-2.5 text-xs tracking-tight transition-all border-b-2 -mb-px ${
               activeTab === 'transactions'
-                ? 'border-zinc-950 text-zinc-950 font-semibold'
+                ? 'border-indigo-600 text-indigo-600 font-medium'
                 : 'border-transparent text-zinc-500 hover:text-zinc-800'
             }`}
           >

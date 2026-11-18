@@ -79,7 +79,7 @@ export default function LiveChatDrawer({ activeRole, project, chatMessages, onSe
         />
         <button 
           type="submit" 
-          className="h-8 px-4 text-xs font-medium text-white bg-zinc-900 rounded hover:bg-zinc-800 transition-colors"
+          className="h-8 px-4 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded shadow-sm transition-colors"
         >
           Send
         </button>

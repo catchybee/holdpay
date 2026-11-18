@@ -32,9 +32,10 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
           </p>
         </div>
 
-        <div className="text-xs text-zinc-500 font-mono">
-          Current View:{' '}
-          <span className="font-semibold text-zinc-900 uppercase">
+        {/* Current View Badge in cool slate/indigo tint */}
+        <div className="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded text-xs font-mono">
+          <span className="text-slate-400">Current View:</span>
+          <span className="font-semibold text-slate-900 uppercase">
             {activeRole}
           </span>
         </div>
@@ -48,45 +49,46 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
           const isReview = m.status === 'under_review';
           const isApproved = m.status === 'approved';
 
+          // Differentiated Tier States
+          let cardStyles = 'bg-white border border-zinc-200 rounded-md p-4 transition-all';
+          if (isApproved) {
+            cardStyles = 'bg-emerald-50/20 border border-emerald-200 rounded-md p-4 transition-all';
+          } else if (isInProgress) {
+            cardStyles = 'bg-white border border-indigo-600 ring-2 ring-indigo-600/10 rounded-md p-4 transition-all';
+          } else if (isReview) {
+            cardStyles = 'bg-amber-50/20 border border-amber-200 rounded-md p-4 transition-all';
+          } else if (isLocked) {
+            cardStyles = 'bg-zinc-50/70 border border-dashed border-zinc-200 text-zinc-400 rounded-md p-4 transition-all';
+          }
+
           return (
-            <div 
-              key={m.id} 
-              className={`bg-white border rounded-md p-4 transition-colors ${
-                isApproved 
-                  ? 'border-zinc-200' 
-                  : isInProgress 
-                  ? 'border-zinc-900' 
-                  : isReview
-                  ? 'border-zinc-300'
-                  : 'border-zinc-200 opacity-60'
-              }`}
-            >
+            <div key={m.id} className={cardStyles}>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 
                 {/* Left Info */}
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className={`text-[11px] font-mono uppercase tracking-wider ${isLocked ? 'text-zinc-400' : 'text-zinc-500'}`}>
                       Tier {m.tier} of 4 (25%)
                     </span>
 
-                    {/* Status text with subtle dot */}
+                    {/* Differentiated Status Soft Pills */}
                     {isApproved && (
-                      <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-mono">
+                      <span className="inline-flex items-center gap-1 text-[11px] bg-emerald-50/80 text-emerald-700 border border-emerald-200/60 px-2 py-0.5 rounded font-mono font-medium">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                         Approved & Paid
                       </span>
                     )}
-                    {isReview && (
-                      <span className="inline-flex items-center gap-1 text-[11px] text-zinc-700 font-mono">
-                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
-                        Under Client Review
+                    {isInProgress && (
+                      <span className="inline-flex items-center gap-1 text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-200/60 px-2 py-0.5 rounded font-mono font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
+                        Work in Progress
                       </span>
                     )}
-                    {isInProgress && (
-                      <span className="inline-flex items-center gap-1 text-[11px] text-zinc-950 font-mono font-medium">
-                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-950" />
-                        Work in Progress
+                    {isReview && (
+                      <span className="inline-flex items-center gap-1 text-[11px] bg-amber-50 text-amber-700 border border-amber-200/60 px-2 py-0.5 rounded font-mono font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                        Under Client Review
                       </span>
                     )}
                     {isLocked && (
@@ -97,27 +99,29 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
                     )}
                   </div>
 
-                  <h4 className="text-sm font-semibold text-zinc-950">
+                  <h4 className={`text-sm font-semibold ${isLocked ? 'text-zinc-400' : 'text-zinc-950'}`}>
                     {m.title}
                   </h4>
-                  <p className="text-xs text-zinc-500 mt-0.5">
+                  <p className={`text-xs mt-0.5 ${isLocked ? 'text-zinc-400' : 'text-zinc-500'}`}>
                     {m.description}
                   </p>
 
-                  {/* Submission details if under review or approved */}
+                  {/* Proof Deliverable Container: Crisp slate code-style container */}
                   {(isReview || isApproved) && m.proofLink && (
-                    <div className="mt-2.5 p-2 bg-zinc-50 border border-zinc-200 rounded text-xs">
-                      <div className="text-[11px] text-zinc-400 font-mono mb-0.5">Proof Deliverable:</div>
+                    <div className="mt-2.5 p-2.5 bg-slate-50 border border-slate-200/80 rounded text-xs">
+                      <div className="text-[11px] text-slate-500 font-mono mb-1">
+                        Proof Deliverable:
+                      </div>
                       <a 
                         href={m.proofLink} 
                         target="_blank" 
                         rel="noreferrer" 
-                        className="text-xs font-mono text-zinc-900 underline hover:text-zinc-600 truncate block"
+                        className="text-xs font-mono text-indigo-600 hover:underline font-medium truncate block"
                       >
                         {m.proofLink}
                       </a>
                       {m.submissionNotes && (
-                        <div className="text-xs text-zinc-600 mt-1 italic">
+                        <div className="text-xs text-slate-600 mt-1 italic">
                           "{m.submissionNotes}"
                         </div>
                       )}
@@ -128,7 +132,7 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
                 {/* Right Amount & Actions */}
                 <div className="flex sm:flex-col items-end justify-between sm:justify-center gap-2 sm:gap-2 shrink-0">
                   <div className="text-right">
-                    <div className="text-base font-mono tabular-nums font-semibold text-zinc-950">
+                    <div className={`text-base font-mono tabular-nums font-semibold ${isLocked ? 'text-zinc-400' : 'text-zinc-900'}`}>
                       ${m.amount.toLocaleString()} USD
                     </div>
                   </div>
@@ -138,7 +142,7 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
                     {activeRole === 'freelancer' && (isInProgress || isReview) && !isApproved && (
                       <button 
                         onClick={() => handleOpenSubmitModal(m)}
-                        className="h-7 px-3 text-xs font-medium text-zinc-900 bg-white border border-zinc-200 rounded hover:bg-zinc-50 transition-colors"
+                        className="h-7 px-3 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded shadow-sm transition-colors"
                       >
                         {isReview ? 'Update Proof' : 'Submit Proof'}
                       </button>
@@ -179,7 +183,7 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
         <div className="modal-overlay">
           <div className="modal-content-minimal">
             <h3 className="text-sm font-semibold tracking-tight text-zinc-950 mb-1">
-              Submit Milestone {selectedMilestone.tier} Proof
+              Submit Milestone {selectedMilestone.tier} Deliverables
             </h3>
             <p className="text-xs text-zinc-500 mb-4">
               Enter the link to deliverables (GitHub pull request, prototype, deployment) for verification.
@@ -188,7 +192,7 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
             <form onSubmit={handleConfirmSubmission}>
               <div className="mb-3">
                 <label className="block text-xs font-medium text-zinc-700 mb-1">
-                  Deliverable Link
+                  Deliverable URL
                 </label>
                 <input 
                   type="url" 
@@ -196,13 +200,13 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
                   value={proofUrl} 
                   onChange={(e) => setProofUrl(e.target.value)}
                   placeholder="https://github.com/..." 
-                  className="w-full text-xs" 
+                  className="w-full text-xs font-mono text-indigo-600" 
                 />
               </div>
 
               <div className="mb-4">
                 <label className="block text-xs font-medium text-zinc-700 mb-1">
-                  Notes
+                  Submission Notes
                 </label>
                 <textarea 
                   rows={3}
@@ -223,7 +227,7 @@ export default function MilestoneTracker({ milestones, activeRole, onSubmitWork,
                 </button>
                 <button 
                   type="submit" 
-                  className="h-8 px-3 text-xs font-medium text-white bg-zinc-900 rounded hover:bg-zinc-800 transition-colors"
+                  className="h-8 px-3 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded shadow-sm transition-colors"
                 >
                   Submit for Approval
                 </button>
