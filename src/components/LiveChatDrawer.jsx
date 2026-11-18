@@ -24,9 +24,9 @@ export default function LiveChatDrawer({ activeRole, project, chatMessages, onSe
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <MessageSquare size={18} color="#06B6D4" />
+            <MessageSquare size={18} color="#C28E4E" />
             <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Real-Time Collaboration Chat</h3>
-            <span style={{ fontSize: '0.68rem', background: 'rgba(6, 182, 212, 0.15)', color: '#38BDF8', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
+            <span style={{ fontSize: '0.68rem', background: 'rgba(194, 142, 78, 0.12)', color: '#925C1A', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
               ROADMAP FEATURE
             </span>
           </div>
@@ -36,7 +36,7 @@ export default function LiveChatDrawer({ activeRole, project, chatMessages, onSe
         </div>
 
         <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-          Posting as: <strong style={{ color: activeRole === 'client' ? '#38BDF8' : '#C084FC' }}>
+          Posting as: <strong style={{ color: activeRole === 'client' ? '#925C1A' : '#A85C3C' }}>
             {activeRole === 'client' ? project.clientName : project.freelancerName}
           </strong>
         </div>
@@ -52,21 +52,21 @@ export default function LiveChatDrawer({ activeRole, project, chatMessages, onSe
               style={{ 
                 alignSelf: isClient ? 'flex-start' : 'flex-end',
                 maxWidth: '80%',
-                background: isClient ? 'rgba(6, 182, 212, 0.12)' : 'rgba(139, 92, 246, 0.15)',
-                border: isClient ? '1px solid rgba(6, 182, 212, 0.3)' : '1px solid rgba(139, 92, 246, 0.3)',
+                background: isClient ? 'rgba(194, 142, 78, 0.12)' : 'rgba(168, 92, 60, 0.12)',
+                border: isClient ? '1px solid rgba(194, 142, 78, 0.3)' : '1px solid rgba(168, 92, 60, 0.3)',
                 borderRadius: '12px',
                 padding: '10px 14px'
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', marginBottom: '4px', fontSize: '0.75rem' }}>
-                <span style={{ fontWeight: 700, color: isClient ? '#38BDF8' : '#C084FC' }}>
+                <span style={{ fontWeight: 700, color: isClient ? '#925C1A' : '#A85C3C' }}>
                   {msg.senderName} ({msg.senderRole.toUpperCase()})
                 </span>
                 <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>
                   {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
-              <div style={{ fontSize: '0.86rem', color: '#F8FAFC' }}>
+              <div style={{ fontSize: '0.86rem', color: 'var(--text-primary)' }}>
                 {msg.message}
               </div>
             </div>
@@ -84,10 +84,7 @@ export default function LiveChatDrawer({ activeRole, project, chatMessages, onSe
           style={{ 
             flex: 1, 
             padding: '10px 16px', 
-            background: 'rgba(0, 0, 0, 0.4)', 
-            border: '1px solid var(--border-glass)', 
             borderRadius: '10px', 
-            color: '#FFF', 
             fontSize: '0.9rem' 
           }}
         />

@@ -38,8 +38,8 @@ export default function AddFreelancerModal({ isOpen, onClose, onAssignFreelancer
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'rgba(139, 92, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <UserPlus size={20} color="#C084FC" />
+            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'rgba(168, 92, 60, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <UserPlus size={20} color="#A85C3C" />
             </div>
             <div>
               <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0 }}>Assign Freelancer to Escrow</h3>
@@ -67,7 +67,7 @@ export default function AddFreelancerModal({ isOpen, onClose, onAssignFreelancer
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Alex Rivera"
-                style={{ width: '100%', padding: '10px 14px 10px 38px', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--border-glass)', borderRadius: '8px', color: '#FFF', fontSize: '0.88rem' }}
+                style={{ width: '100%', padding: '10px 14px 10px 38px', borderRadius: '8px', fontSize: '0.88rem' }}
               />
             </div>
           </div>
@@ -84,7 +84,7 @@ export default function AddFreelancerModal({ isOpen, onClose, onAssignFreelancer
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="freelancer@domain.com"
-                style={{ width: '100%', padding: '10px 14px 10px 38px', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--border-glass)', borderRadius: '8px', color: '#FFF', fontSize: '0.88rem' }}
+                style={{ width: '100%', padding: '10px 14px 10px 38px', borderRadius: '8px', fontSize: '0.88rem' }}
               />
             </div>
           </div>
@@ -106,15 +106,15 @@ export default function AddFreelancerModal({ isOpen, onClose, onAssignFreelancer
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    border: email === p.email ? '1px solid #C084FC' : '1px solid rgba(255,255,255,0.05)',
-                    background: email === p.email ? 'rgba(139, 92, 246, 0.15)' : 'rgba(0,0,0,0.2)'
+                    border: email === p.email ? '1px solid #A85C3C' : '1px solid var(--border-glass)',
+                    background: email === p.email ? 'rgba(168, 92, 60, 0.12)' : 'rgba(244, 238, 229, 0.6)'
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: '0.84rem', fontWeight: 700, color: '#FFF' }}>{p.name}</div>
+                    <div style={{ fontSize: '0.84rem', fontWeight: 700, color: 'var(--text-primary)' }}>{p.name}</div>
                     <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>{p.email} • {p.role}</div>
                   </div>
-                  {email === p.email && <CheckCircle2 size={16} color="#C084FC" />}
+                  {email === p.email && <CheckCircle2 size={16} color="#A85C3C" />}
                 </div>
               ))}
             </div>
@@ -124,7 +124,7 @@ export default function AddFreelancerModal({ isOpen, onClose, onAssignFreelancer
             <button type="button" className="btn-secondary" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="btn-primary" style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)' }}>
+            <button type="submit" className="btn-primary" style={{ background: 'linear-gradient(135deg, #A85C3C 0%, #854020 100%)' }}>
               <UserPlus size={16} /> Assign Freelancer to Escrow
             </button>
           </div>

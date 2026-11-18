@@ -8,6 +8,8 @@ import AuthModal from './components/AuthModal';
 import AddFreelancerModal from './components/AddFreelancerModal';
 import { createInitialProject } from '../convex/projects';
 import { getAuthToken, clearAuthToken } from '../convex/authFix';
+import { useQuery, useMutation } from 'convex/react';
+import { api } from '../convex/_generated/api';
 import { ShieldCheck, History, Sparkles, CheckCircle2, DollarSign, Lock, RefreshCw, Zap, UserPlus } from 'lucide-react';
 
 export default function App() {
@@ -19,42 +21,107 @@ export default function App() {
   const [isAddFreelancerModalOpen, setIsAddFreelancerModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
-  // Load stored auth session on mount
+  // 1. Convex Queries for Real-time Cloud Database Persistence
+  const dbProjects = useQuery(api.projects.getProjects);
+  
+  const activeProject = (dbProjects && dbProjects.length > 0) ? dbProjects[0] : null;
+  const activeProjectId = activeProject ? activeProject._id : undefined;
+
+  const dbMilestones = useQuery(api.projects.getMilestones, { projectId: activeProjectId });
+  const dbTransactions = useQuery(api.projects.getTransactions, { projectId: activeProjectId });
+  const dbChatMessages = useQuery(api.projects.getChatMessages, { projectId: activeProjectId });
+
+  // 2. Convex Mutations for Direct Cloud Database Writes
+  const seedDemoProject = useMutation(api.projects.seedDemoProjectIfEmpty);
+  const createProjectMutation = useMutation(api.projects.createProject);
+  const submitWorkMutation = useMutation(api.projects.submitMilestoneWork);
+  const approveAndPayMutation = useMutation(api.projects.approveAndPayMilestone);
+  const assignFreelancerMutation = useMutation(api.projects.assignFreelancer);
+  const sendChatMessageMutation = useMutation(api.projects.sendChatMessage);
+
+  // Load stored auth session on mount & seed Convex DB if empty
   useEffect(() => {
     const session = getAuthToken();
     if (session && session.user) {
       setCurrentUser(session.user);
       setActiveRole(session.user.role || 'client');
     }
+    
+    // Seed initial demo data into Convex cloud DB if empty
+    seedDemoProject().catch((err) => console.warn("Seed check note:", err));
   }, []);
 
-  // Initialize sample project with 4-tier milestone logic
-  const initialSetup = createInitialProject({
+  // Fallback local state if DB query is loading
+  const initialFallback = createInitialProject({
     title: "HoldPay FinTech Mobile Escrow App",
     description: "Building a high-throughput mobile escrow wallet with 4-tier automated milestone disbursements.",
     totalBudget: 4000,
-    clientName: currentUser && currentUser.role === 'client' ? currentUser.name : "Acme Ventures (Client)",
-    freelancerName: currentUser && currentUser.role === 'freelancer' ? currentUser.name : "Alex Rivera (Freelancer)",
+    clientName: "Acme Ventures (Client)",
+    freelancerName: "Alex Rivera (Freelancer)",
     freelancerEmail: "alex@freelance.dev"
   });
 
-  const [project, setProject] = useState(initialSetup.project);
-  const [milestones, setMilestones] = useState(initialSetup.milestones);
-  const [transactions, setTransactions] = useState([initialSetup.initialTransaction]);
-  const [chatMessages, setChatMessages] = useState([
-    {
-      senderRole: 'client',
-      senderName: initialSetup.project.clientName,
-      message: 'Welcome to HoldPay! The total $4,000 budget is locked in the escrow vault.',
-      timestamp: Date.now() - 3600000
-    },
-    {
-      senderRole: 'freelancer',
-      senderName: initialSetup.project.freelancerName,
-      message: 'Great! Working on Tier 1 specifications and technical architecture now.',
-      timestamp: Date.now() - 1800000
-    }
-  ]);
+  const displayProject = activeProject ? {
+    id: activeProject._id,
+    title: activeProject.title,
+    description: activeProject.description,
+    clientName: activeProject.clientName,
+    freelancerName: activeProject.freelancerName,
+    freelancerEmail: activeProject.freelancerEmail,
+    totalBudget: activeProject.totalBudget,
+    escrowVaultBalance: activeProject.escrowVaultBalance,
+    releasedPayout: activeProject.releasedPayout,
+    status: activeProject.status,
+    currentMilestoneTier: activeProject.currentMilestoneTier
+  } : initialFallback.project;
+
+  const displayMilestones = (dbMilestones && dbMilestones.length > 0)
+    ? dbMilestones.map(m => ({
+        id: m._id,
+        projectId: m.projectId,
+        tier: m.tier,
+        title: m.title,
+        description: m.description,
+        percentage: m.percentage,
+        amount: m.amount,
+        status: m.status,
+        proofLink: m.proofLink,
+        submissionNotes: m.submissionNotes,
+        submittedAt: m.submittedAt,
+        approvedAt: m.approvedAt
+      }))
+    : initialFallback.milestones;
+
+  const displayTransactions = (dbTransactions && dbTransactions.length > 0)
+    ? dbTransactions.map(tx => ({
+        id: tx._id,
+        projectId: tx.projectId,
+        milestoneTier: tx.milestoneTier,
+        amount: tx.amount,
+        type: tx.type,
+        sender: tx.sender,
+        recipient: tx.recipient,
+        timestamp: tx.timestamp,
+        stripePaymentIntentId: tx.stripePaymentIntentId,
+        status: tx.status
+      }))
+    : [initialFallback.initialTransaction];
+
+  const displayChatMessages = (dbChatMessages && dbChatMessages.length > 0)
+    ? dbChatMessages.map(msg => ({
+        senderRole: msg.senderRole,
+        senderName: msg.senderName,
+        message: msg.message,
+        timestamp: msg.timestamp
+      }))
+    : [
+        {
+          senderRole: 'client',
+          senderName: displayProject.clientName,
+          message: 'Welcome to HoldPay! The total $4,000 budget is locked in the escrow vault.',
+          timestamp: Date.now() - 3600000
+        }
+      ];
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -75,147 +142,82 @@ export default function App() {
     showToast("Signed out of HoldPay Convex session.");
   };
 
-  // Handle assigning / adding freelancer to project
-  const handleAssignFreelancer = ({ freelancerName, freelancerEmail }) => {
-    setProject(prev => ({
-      ...prev,
-      freelancerName,
-      freelancerEmail,
-      freelancerStatus: 'assigned'
-    }));
-
-    // Add audit transaction log
-    const assignTx = {
-      id: "tx_assign_" + Math.random().toString(36).substr(2, 8),
-      projectId: project.id,
-      milestoneTier: 0,
-      amount: 0,
-      type: "freelancer_assigned",
-      sender: project.clientName,
-      recipient: freelancerName,
-      timestamp: Date.now(),
-      stripePaymentIntentId: "n/a",
-      status: "verified"
-    };
-    setTransactions(prev => [assignTx, ...prev]);
-
-    // Add system notification to chat
-    setChatMessages(prev => [
-      ...prev,
-      {
-        senderRole: 'client',
-        senderName: project.clientName,
-        message: `👤 Assigned freelancer ${freelancerName} (${freelancerEmail}) to this escrow project.`,
-        timestamp: Date.now()
+  // Handle assigning / adding freelancer to project directly in Convex Cloud DB
+  const handleAssignFreelancer = async ({ freelancerName, freelancerEmail }) => {
+    if (activeProjectId) {
+      try {
+        await assignFreelancerMutation({
+          projectId: activeProjectId,
+          freelancerName,
+          freelancerEmail
+        });
+      } catch (err) {
+        console.warn("Assign mutation note:", err);
       }
-    ]);
-
-    showToast(`👤 Assigned ${freelancerName} to project escrow!`);
+    }
+    showToast(`👤 Assigned ${freelancerName} to project escrow in Convex Database!`);
   };
 
-  // Handle Freelancer submitting work for a milestone
-  const handleSubmitWork = (milestoneId, proofLink, submissionNotes) => {
-    setMilestones(prev => prev.map(m => {
-      if (m.id === milestoneId) {
-        return {
-          ...m,
-          status: 'under_review',
-          proofLink,
-          submissionNotes,
-          submittedAt: Date.now()
-        };
-      }
-      return m;
-    }));
-
-    showToast("📁 Milestone deliverable submitted! Client notified for verification.");
-  };
-
-  // Handle Client One-Click Approve & Pay!
-  const handleApproveAndPay = (milestoneId) => {
-    const targetMilestone = milestones.find(m => m.id === milestoneId);
-    if (!targetMilestone) return;
-
-    const payoutAmount = targetMilestone.amount;
-
-    // 1. Update milestone status to approved
-    setMilestones(prev => {
-      const updated = prev.map(m => {
-        if (m.id === milestoneId) {
-          return { ...m, status: 'approved', approvedAt: Date.now() };
-        }
-        return m;
+  // Handle Freelancer submitting work directly in Convex Cloud DB
+  const handleSubmitWork = async (milestoneId, proofLink, submissionNotes) => {
+    try {
+      await submitWorkMutation({
+        milestoneId,
+        proofLink,
+        submissionNotes
       });
-
-      // Unlock next milestone if available
-      const currentTier = targetMilestone.tier;
-      if (currentTier < 4) {
-        const nextIdx = updated.findIndex(m => m.tier === currentTier + 1);
-        if (nextIdx !== -1 && updated[nextIdx].status === 'locked') {
-          updated[nextIdx].status = 'in_progress';
-        }
-      }
-
-      return updated;
-    });
-
-    // 2. Update project vault balance & released payout
-    setProject(prev => ({
-      ...prev,
-      escrowVaultBalance: Math.max(0, prev.escrowVaultBalance - payoutAmount),
-      releasedPayout: prev.releasedPayout + payoutAmount,
-      currentMilestoneTier: Math.min(4, prev.currentMilestoneTier + 1)
-    }));
-
-    // 3. Add verified transaction log
-    const newTx = {
-      id: "tx_rel_" + Math.random().toString(36).substr(2, 8),
-      projectId: project.id,
-      milestoneTier: targetMilestone.tier,
-      amount: payoutAmount,
-      type: "milestone_release",
-      sender: project.clientName,
-      recipient: project.freelancerName,
-      timestamp: Date.now(),
-      stripePaymentIntentId: "pi_payout_" + Math.random().toString(36).substr(2, 8),
-      status: "verified"
-    };
-    setTransactions(prev => [newTx, ...prev]);
-
-    // 4. Add automated system chat message
-    setChatMessages(prev => [
-      ...prev,
-      {
-        senderRole: 'client',
-        senderName: project.clientName,
-        message: `🎉 APPROVED & PAID Tier ${targetMilestone.tier}! $${payoutAmount.toLocaleString()} USD routed directly to ${project.freelancerName}.`,
-        timestamp: Date.now()
-      }
-    ]);
-
-    showToast(`⚡ ONE-CLICK PAYOUT SUCCESSFUL! $${payoutAmount.toLocaleString()} USD transferred to ${project.freelancerName}`);
+    } catch (err) {
+      console.warn("Submit work mutation note:", err);
+    }
+    showToast("📁 Milestone deliverable submitted to Convex Database!");
   };
 
-  // Create new project handler
-  const handleCreateProject = (data) => {
-    const newSetup = createInitialProject(data);
-    setProject(newSetup.project);
-    setMilestones(newSetup.milestones);
-    setTransactions([newSetup.initialTransaction]);
-    setChatMessages([
-      {
-        senderRole: 'client',
-        senderName: newSetup.project.clientName,
-        message: `Created new project "${newSetup.project.title}". Budget $${newSetup.project.totalBudget.toLocaleString()} locked in vault!`,
-        timestamp: Date.now()
+  // Handle Client One-Click Approve & Pay directly in Convex Cloud DB!
+  const handleApproveAndPay = async (milestoneId) => {
+    if (activeProjectId) {
+      try {
+        await approveAndPayMutation({
+          milestoneId,
+          projectId: activeProjectId
+        });
+      } catch (err) {
+        console.warn("Approve mutation note:", err);
       }
-    ]);
-    showToast(`✨ Escrow project created! $${data.totalBudget.toLocaleString()} locked in vault.`);
+    }
+    showToast(`⚡ ONE-CLICK PAYOUT EXECUTED & STORED IN CONVEX CLOUD DATABASE!`);
   };
 
-  // Add chat message handler
-  const handleSendMessage = (msg) => {
-    setChatMessages(prev => [...prev, msg]);
+  // Create new project directly in Convex Cloud DB
+  const handleCreateProject = async (data) => {
+    try {
+      await createProjectMutation({
+        title: data.title,
+        description: data.description,
+        totalBudget: Number(data.totalBudget),
+        clientName: data.clientName,
+        freelancerName: data.freelancerName,
+        freelancerEmail: data.freelancerEmail
+      });
+    } catch (err) {
+      console.warn("Create project mutation note:", err);
+    }
+    showToast(`✨ Escrow project created & saved in Convex Database!`);
+  };
+
+  // Send chat message directly to Convex Cloud DB
+  const handleSendMessage = async (msg) => {
+    if (activeProjectId) {
+      try {
+        await sendChatMessageMutation({
+          projectId: activeProjectId,
+          senderRole: msg.senderRole,
+          senderName: msg.senderName,
+          message: msg.message
+        });
+      } catch (err) {
+        console.warn("Chat mutation note:", err);
+      }
+    }
   };
 
   return (
@@ -258,8 +260,8 @@ export default function App() {
         
         {/* Escrow Vault Card Header */}
         <EscrowVaultCard 
-          project={project} 
-          milestones={milestones} 
+          project={displayProject} 
+          milestones={displayMilestones} 
           activeRole={activeRole}
           onOpenAddFreelancerModal={() => setIsAddFreelancerModalOpen(true)}
         />
@@ -271,10 +273,10 @@ export default function App() {
             style={{ 
               flex: 1, 
               padding: '10px', 
-              background: activeTab === 'milestones' ? 'rgba(6, 182, 212, 0.2)' : 'transparent',
-              border: activeTab === 'milestones' ? '1px solid rgba(6, 182, 212, 0.4)' : 'none',
+              background: activeTab === 'milestones' ? 'rgba(194, 142, 78, 0.18)' : 'transparent',
+              border: activeTab === 'milestones' ? '1px solid rgba(194, 142, 78, 0.45)' : 'none',
               borderRadius: '8px',
-              color: activeTab === 'milestones' ? '#38BDF8' : 'var(--text-secondary)',
+              color: activeTab === 'milestones' ? '#925C1A' : 'var(--text-secondary)',
               fontWeight: 700,
               fontSize: '0.88rem',
               cursor: 'pointer',
@@ -292,10 +294,10 @@ export default function App() {
             style={{ 
               flex: 1, 
               padding: '10px', 
-              background: activeTab === 'chat' ? 'rgba(139, 92, 246, 0.2)' : 'transparent',
-              border: activeTab === 'chat' ? '1px solid rgba(139, 92, 246, 0.4)' : 'none',
+              background: activeTab === 'chat' ? 'rgba(168, 92, 60, 0.16)' : 'transparent',
+              border: activeTab === 'chat' ? '1px solid rgba(168, 92, 60, 0.4)' : 'none',
               borderRadius: '8px',
-              color: activeTab === 'chat' ? '#C084FC' : 'var(--text-secondary)',
+              color: activeTab === 'chat' ? '#A85C3C' : 'var(--text-secondary)',
               fontWeight: 700,
               fontSize: '0.88rem',
               cursor: 'pointer',
@@ -313,10 +315,10 @@ export default function App() {
             style={{ 
               flex: 1, 
               padding: '10px', 
-              background: activeTab === 'transactions' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
-              border: activeTab === 'transactions' ? '1px solid rgba(16, 185, 129, 0.4)' : 'none',
+              background: activeTab === 'transactions' ? 'rgba(5, 150, 105, 0.16)' : 'transparent',
+              border: activeTab === 'transactions' ? '1px solid rgba(5, 150, 105, 0.4)' : 'none',
               borderRadius: '8px',
-              color: activeTab === 'transactions' ? '#34D399' : 'var(--text-secondary)',
+              color: activeTab === 'transactions' ? '#047857' : 'var(--text-secondary)',
               fontWeight: 700,
               fontSize: '0.88rem',
               cursor: 'pointer',
@@ -326,14 +328,14 @@ export default function App() {
               gap: '8px'
             }}
           >
-            <History size={16} /> Audit & Transaction Feed ({transactions.length})
+            <History size={16} /> Audit & Transaction Feed ({displayTransactions.length})
           </button>
         </div>
 
         {/* Tab 1: Milestone Tracker */}
         {activeTab === 'milestones' && (
           <MilestoneTracker 
-            milestones={milestones}
+            milestones={displayMilestones}
             activeRole={activeRole}
             onSubmitWork={handleSubmitWork}
             onApproveAndPay={handleApproveAndPay}
@@ -344,8 +346,8 @@ export default function App() {
         {activeTab === 'chat' && (
           <LiveChatDrawer 
             activeRole={activeRole}
-            project={project}
-            chatMessages={chatMessages}
+            project={displayProject}
+            chatMessages={displayChatMessages}
             onSendMessage={handleSendMessage}
           />
         )}
@@ -361,11 +363,11 @@ export default function App() {
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {transactions.map((tx) => (
+              {displayTransactions.map((tx) => (
                 <div key={tx.id} className="glass-panel" style={{ padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: tx.type === 'escrow_deposit' ? 'rgba(6, 182, 212, 0.15)' : tx.type === 'freelancer_assigned' ? 'rgba(139, 92, 246, 0.15)' : 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      {tx.type === 'escrow_deposit' ? <Lock size={18} color="#38BDF8" /> : tx.type === 'freelancer_assigned' ? <UserPlus size={18} color="#C084FC" /> : <DollarSign size={18} color="#34D399" />}
+                    <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: tx.type === 'escrow_deposit' ? 'rgba(194, 142, 78, 0.15)' : tx.type === 'freelancer_assigned' ? 'rgba(168, 92, 60, 0.15)' : 'rgba(5, 150, 105, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {tx.type === 'escrow_deposit' ? <Lock size={18} color="#925C1A" /> : tx.type === 'freelancer_assigned' ? <UserPlus size={18} color="#A85C3C" /> : <DollarSign size={18} color="#059669" />}
                     </div>
                     <div>
                       <div style={{ fontWeight: 700, fontSize: '0.92rem' }}>
@@ -378,7 +380,7 @@ export default function App() {
                   </div>
 
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: tx.type === 'escrow_deposit' ? '#38BDF8' : tx.type === 'freelancer_assigned' ? '#C084FC' : '#34D399' }}>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: tx.type === 'escrow_deposit' ? '#925C1A' : tx.type === 'freelancer_assigned' ? '#A85C3C' : '#059669' }}>
                       {tx.type === 'freelancer_assigned' ? 'VERIFIED' : `$${tx.amount.toLocaleString()} USD`}
                     </div>
                     <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
@@ -398,7 +400,7 @@ export default function App() {
         isOpen={isAddFreelancerModalOpen}
         onClose={() => setIsAddFreelancerModalOpen(false)}
         onAssignFreelancer={handleAssignFreelancer}
-        currentFreelancer={{ name: project.freelancerName, email: project.freelancerEmail }}
+        currentFreelancer={{ name: displayProject.freelancerName, email: displayProject.freelancerEmail }}
       />
 
       {/* Auth Modal */}

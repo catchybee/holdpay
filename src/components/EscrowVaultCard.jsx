@@ -20,8 +20,8 @@ export default function EscrowVaultCard({ project, milestones, activeRole, onOpe
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 700 }}>{project.title}</h2>
             <span style={{ 
-              background: 'rgba(6, 182, 212, 0.15)', 
-              color: '#38BDF8', 
+              background: 'rgba(194, 142, 78, 0.12)', 
+              color: '#925C1A', 
               fontSize: '0.72rem', 
               padding: '3px 10px', 
               borderRadius: '12px', 
@@ -42,15 +42,15 @@ export default function EscrowVaultCard({ project, milestones, activeRole, onOpe
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           <div className="glass-panel" style={{ padding: '10px 16px', fontSize: '0.8rem' }}>
             <div style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>
-              Client: <span style={{ color: '#F8FAFC', fontWeight: 600 }}>{project.clientName}</span>
+              Client: <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{project.clientName}</span>
             </div>
             <div style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
               Freelancer: 
-              <span style={{ color: '#C084FC', fontWeight: 600 }}>{project.freelancerName}</span>
+              <span style={{ color: '#A85C3C', fontWeight: 600 }}>{project.freelancerName}</span>
               {project.freelancerEmail && (
                 <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>({project.freelancerEmail})</span>
               )}
-              <span style={{ fontSize: '0.65rem', background: 'rgba(16, 185, 129, 0.15)', color: '#34D399', padding: '1px 6px', borderRadius: '8px', fontWeight: 700 }}>
+              <span style={{ fontSize: '0.65rem', background: 'rgba(5, 150, 105, 0.12)', color: '#047857', padding: '1px 6px', borderRadius: '8px', fontWeight: 700 }}>
                 VERIFIED
               </span>
             </div>
@@ -60,7 +60,7 @@ export default function EscrowVaultCard({ project, milestones, activeRole, onOpe
             <button 
               className="btn-secondary"
               onClick={onOpenAddFreelancerModal}
-              style={{ background: 'rgba(139, 92, 246, 0.15)', borderColor: 'rgba(139, 92, 246, 0.4)', color: '#C084FC', padding: '8px 14px', fontSize: '0.82rem' }}
+              style={{ background: 'rgba(168, 92, 60, 0.1)', borderColor: 'rgba(168, 92, 60, 0.3)', color: '#A85C3C', padding: '8px 14px', fontSize: '0.82rem' }}
             >
               <UserPlus size={15} /> + Add / Change Freelancer
             </button>
@@ -79,7 +79,7 @@ export default function EscrowVaultCard({ project, milestones, activeRole, onOpe
         <div className="glass-panel" style={{ padding: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '6px' }}>
             <span>TOTAL PROJECT BUDGET</span>
-            <DollarSign size={16} color="#06B6D4" />
+            <DollarSign size={16} color="#C28E4E" />
           </div>
           <div style={{ fontSize: '1.6rem', fontWeight: 800 }} className="gradient-text-cyan">
             ${totalBudget.toLocaleString()} USD
@@ -90,12 +90,12 @@ export default function EscrowVaultCard({ project, milestones, activeRole, onOpe
         </div>
 
         {/* Vault Locked Balance */}
-        <div className="glass-panel" style={{ padding: '16px', borderLeft: '3px solid #06B6D4' }}>
+        <div className="glass-panel" style={{ padding: '16px', borderLeft: '3px solid #C28E4E' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '6px' }}>
             <span>ESCROW VAULT BALANCE</span>
-            <Lock size={16} color="#38BDF8" />
+            <Lock size={16} color="#925C1A" />
           </div>
-          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#38BDF8' }}>
+          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#925C1A' }}>
             ${lockedBalance.toLocaleString()} USD
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
@@ -104,15 +104,15 @@ export default function EscrowVaultCard({ project, milestones, activeRole, onOpe
         </div>
 
         {/* Released Payout */}
-        <div className="glass-panel" style={{ padding: '16px', borderLeft: '3px solid #10B981' }}>
+        <div className="glass-panel" style={{ padding: '16px', borderLeft: '3px solid #059669' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '6px' }}>
             <span>RELEASED PAYOUT</span>
-            <ArrowUpRight size={16} color="#10B981" />
+            <ArrowUpRight size={16} color="#059669" />
           </div>
           <div style={{ fontSize: '1.6rem', fontWeight: 800 }} className="gradient-text-emerald">
             ${releasedPayout.toLocaleString()} USD
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#34D399', marginTop: '4px' }}>
+          <div style={{ fontSize: '0.75rem', color: '#059669', marginTop: '4px' }}>
             {approvedCount} / 4 Milestones Verified
           </div>
         </div>
@@ -122,17 +122,17 @@ export default function EscrowVaultCard({ project, milestones, activeRole, onOpe
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
           <span>AUTOMATED 4-TIER MILESTONE PROGRESS (25% EACH)</span>
-          <span style={{ fontWeight: 700, color: '#F8FAFC' }}>{progressPercent}% RELEASED</span>
+          <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{progressPercent}% RELEASED</span>
         </div>
 
         {/* Progress Bar background */}
-        <div style={{ height: '10px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '6px', overflow: 'hidden', position: 'relative', marginBottom: '16px' }}>
+        <div style={{ height: '10px', background: 'rgba(195, 180, 160, 0.3)', borderRadius: '6px', overflow: 'hidden', position: 'relative', marginBottom: '16px' }}>
           <div style={{ 
             height: '100%', 
             width: `${progressPercent}%`, 
-            background: 'linear-gradient(90deg, #06B6D4 0%, #10B981 100%)',
+            background: 'linear-gradient(90deg, #C28E4E 0%, #059669 100%)',
             transition: 'width 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: '0 0 12px rgba(16, 185, 129, 0.5)'
+            boxShadow: '0 0 12px rgba(5, 150, 105, 0.35)'
           }} />
         </div>
 
@@ -144,21 +144,21 @@ export default function EscrowVaultCard({ project, milestones, activeRole, onOpe
             const isInProgress = m.status === 'in_progress';
             
             let color = 'var(--text-muted)';
-            let bg = 'rgba(255, 255, 255, 0.04)';
-            let border = 'rgba(255, 255, 255, 0.08)';
+            let bg = 'rgba(244, 238, 229, 0.5)';
+            let border = 'var(--border-glass)';
 
             if (isApproved) {
-              color = '#34D399';
-              bg = 'rgba(16, 185, 129, 0.1)';
-              border = 'rgba(16, 185, 129, 0.3)';
+              color = '#059669';
+              bg = 'rgba(5, 150, 105, 0.08)';
+              border = 'rgba(5, 150, 105, 0.3)';
             } else if (isReview) {
-              color = '#F59E0B';
-              bg = 'rgba(245, 158, 11, 0.1)';
-              border = 'rgba(245, 158, 11, 0.4)';
+              color = '#D97706';
+              bg = 'rgba(217, 119, 6, 0.08)';
+              border = 'rgba(217, 119, 6, 0.3)';
             } else if (isInProgress) {
-              color = '#38BDF8';
-              bg = 'rgba(6, 182, 212, 0.1)';
-              border = 'rgba(6, 182, 212, 0.4)';
+              color = '#925C1A';
+              bg = 'rgba(194, 142, 78, 0.1)';
+              border = 'rgba(194, 142, 78, 0.35)';
             }
 
             return (
@@ -173,7 +173,7 @@ export default function EscrowVaultCard({ project, milestones, activeRole, onOpe
                 <div style={{ fontSize: '0.72rem', fontWeight: 700, color, textTransform: 'uppercase', marginBottom: '2px' }}>
                   Tier {m.tier} (25%)
                 </div>
-                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#F8FAFC' }}>
+                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                   ${m.amount.toLocaleString()}
                 </div>
               </div>

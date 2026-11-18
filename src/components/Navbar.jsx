@@ -12,11 +12,11 @@ export default function Navbar({ currentUser, activeRole, setActiveRole, onOpenA
             width: '42px', 
             height: '42px', 
             borderRadius: '12px', 
-            background: 'linear-gradient(135deg, #06B6D4 0%, #8B5CF6 100%)', 
+            background: 'linear-gradient(135deg, #C28E4E 0%, #9A682C 100%)', 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
-            boxShadow: '0 0 20px rgba(6, 182, 212, 0.4)'
+            boxShadow: '0 4px 16px rgba(194, 142, 78, 0.35)'
           }}>
             <Lock size={22} color="#FFFFFF" />
           </div>
@@ -27,9 +27,9 @@ export default function Navbar({ currentUser, activeRole, setActiveRole, onOpenA
               </h1>
               <span style={{ 
                 fontSize: '0.65rem', 
-                background: 'rgba(16, 185, 129, 0.15)', 
-                color: '#34D399', 
-                border: '1px solid rgba(16, 185, 129, 0.3)', 
+                background: 'rgba(5, 150, 105, 0.1)', 
+                color: '#047857', 
+                border: '1px solid rgba(5, 150, 105, 0.25)', 
                 padding: '2px 8px', 
                 borderRadius: '12px', 
                 fontWeight: 700 
@@ -51,7 +51,7 @@ export default function Navbar({ currentUser, activeRole, setActiveRole, onOpenA
             <button
               onClick={() => setActiveRole('client')}
               style={{
-                background: activeRole === 'client' ? 'linear-gradient(135deg, #06B6D4 0%, #0284C7 100%)' : 'transparent',
+                background: activeRole === 'client' ? 'linear-gradient(135deg, #C28E4E 0%, #9A682C 100%)' : 'transparent',
                 color: activeRole === 'client' ? '#FFF' : 'var(--text-secondary)',
                 border: 'none',
                 padding: '6px 12px',
@@ -70,7 +70,7 @@ export default function Navbar({ currentUser, activeRole, setActiveRole, onOpenA
             <button
               onClick={() => setActiveRole('freelancer')}
               style={{
-                background: activeRole === 'freelancer' ? 'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)' : 'transparent',
+                background: activeRole === 'freelancer' ? 'linear-gradient(135deg, #A85C3C 0%, #854020 100%)' : 'transparent',
                 color: activeRole === 'freelancer' ? '#FFF' : 'var(--text-secondary)',
                 border: 'none',
                 padding: '6px 12px',
@@ -97,12 +97,12 @@ export default function Navbar({ currentUser, activeRole, setActiveRole, onOpenA
           {currentUser ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div className="glass-panel" style={{ padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: currentUser.role === 'client' ? '#06B6D4' : '#8B5CF6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.75rem', color: '#FFF' }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: currentUser.role === 'client' ? '#C28E4E' : '#A85C3C', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.75rem', color: '#FFF' }}>
                   {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#FFF' }}>{currentUser.name}</div>
-                  <div style={{ fontSize: '0.68rem', color: currentUser.role === 'client' ? '#38BDF8' : '#C084FC', textTransform: 'uppercase', fontWeight: 700 }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>{currentUser.name}</div>
+                  <div style={{ fontSize: '0.68rem', color: currentUser.role === 'client' ? '#925C1A' : '#A85C3C', textTransform: 'uppercase', fontWeight: 700 }}>
                     {currentUser.role}
                   </div>
                 </div>
